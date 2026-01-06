@@ -1,5 +1,8 @@
+# Import the FastAPI class
 from fastapi import Body, FastAPI
 
+# Create an instance of the FastAPI application
+# This is similar to initializing a SparkSession or a database connection
 app = FastAPI()
 
 
@@ -13,8 +16,11 @@ BOOKS = [
 ]
 
 
+# Define a 'GET' endpoint
+# In data terms, this is like setting up a 'Read' operation
 @app.get("/books")
 async def read_all_books():
+    # Return a Python dictionary, which FastAPI automatically converts to JSON
     return BOOKS
 
 
@@ -74,3 +80,4 @@ async def delete_book(book_title: str):
         if BOOKS[i].get('title').casefold() == book_title.casefold():
             BOOKS.pop(i)
             break
+
