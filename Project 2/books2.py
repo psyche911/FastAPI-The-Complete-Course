@@ -31,8 +31,8 @@ class BookRequest(BaseModel):
     rating: int = Field(gt=0, lt=6)
     published_date: int = Field(gt=1999, lt=2031)
 
-    model_config = {
-        "json_schema_extra": {
+    model_config = {    # a special dictionary that configures the model
+        "json_schema_extra": {   # provides an example of what the JSON data should look like
             "example": {
                 "title": "A new book",
                 "author": "codingwithroby",
@@ -43,8 +43,6 @@ class BookRequest(BaseModel):
         }
     }
         
-
-
 
 BOOKS = [
     Book(1, 'Computer Science Pro', 'codingwithroby', 'A very nice book!', 5, 2030),
@@ -78,7 +76,6 @@ async def read_book_by_rating(book_rating: int = Query(gt=0, lt=6)):
     return books_to_return
 
 
-
 @app.get("/books/publish/", status_code=status.HTTP_200_OK)
 async def read_books_by_publish_date(published_date: int = Query(gt=1999, lt=2031)):
     books_to_return = []
@@ -91,10 +88,13 @@ async def read_books_by_publish_date(published_date: int = Query(gt=1999, lt=203
 @app.post("/create-book", status_code=status.HTTP_201_CREATED)
 async def create_book(book_request: BookRequest):
     new_book = Book(**book_request.model_dump())
+    # Converts the validated BookRequest to a dict (model_dump()), 
+    # then unpacks it (**) to create a Book instance.
     BOOKS.append(find_book_id(new_book))
 
 
 def find_book_id(book: Book):
+    # Assigns a unique ID to the new book
     book.id = 1 if len(BOOKS) == 0 else BOOKS[-1].id + 1
     return book
 
